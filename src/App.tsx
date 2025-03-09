@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import "./App.css"
 
 function App() {
@@ -11,9 +11,7 @@ function App() {
   }
   const [currentProduct, setCurrentProduct] = useState<Task | null>(null)
   const [text, setText] = useState<string>("")
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, text: "Задача 1", completed: false },
-  ])
+  const [tasks, setTasks] = useState<Task[]>([])
 
   return (
     <div className="App">
@@ -29,25 +27,26 @@ function App() {
             Добавить
           </button>
         </div>
-        {tasks.map((task) => (
-          <div className="tasks">
-            <p>{task.id}</p>
+        {tasks.map((task, taskId) => (
+          <div key={taskId} className="tasks">
+            <p>{taskId + 1}</p>
             <p>{task.text}</p>
             <div>
               <p>{task.completed ? "Выполнено" : "Не выполнено"}</p>
               <input
-                onClick={() => {
+                onChange={() => {
                   setCurrentProduct(task)
-                  setTasks((currentProduct) =>
-                    currentProduct.map((item) =>
-                      item.completed === false
-                        ? { ...item, completed: true }
-                        : { ...item, completed: false }
+                  setTasks((prevTasks) =>
+                    prevTasks.map((item, i) =>
+                      i === taskId
+                        ? { ...item, completed: !item.completed }
+                        : item
                     )
                   )
                 }}
                 className="checkbox"
                 type="checkbox"
+                checked={task.completed}
               />
               <button
                 onClick={() => {
